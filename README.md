@@ -1,57 +1,104 @@
-# Secure-Small-Business-Network
 # Secure Small Business Network
 
-## Overview
+A Cisco Packet Tracer project demonstrating the design and security of a small business network with separate Accounting and IT networks.
 
-This project is a small-business network I designed and configured in Cisco Packet Tracer to practice networking and cybersecurity concepts I have been learning through my coursework.
-
-The network separates an Accounting department and an IT department into two different IPv4 networks connected by a Cisco router. After establishing connectivity between the networks, I implemented access controls to restrict communication from Accounting into the IT network while still allowing access to an authorized HTTP service.
-
-I also configured SSH for secure remote administration of the router and disabled Telnet.
+The project focuses on basic network segmentation, router configuration, access control lists (ACLs), SSH remote management, Telnet restriction, and connectivity testing.
 
 ## Network Topology
 
-![Network Topology](screenshots/network-topology.png)
+The network is divided into two /24 networks:
 
-The network consists of:
+- **Accounting:** 192.168.10.0/24
+- **IT:** 192.168.20.0/24
 
-- **Accounting Network:** 192.168.10.0/24
-- **IT Network:** 192.168.20.0/24
-- **R1 G0/0:** 192.168.10.1
-- **R1 G0/1:** 192.168.20.1
-- **Accounting PC:** 192.168.10.10
-- **IT PC:** 192.168.20.20
-- **File Server:** 192.168.20.100
+A Cisco 2911 router connects the two networks.
 
-## Project Objectives
+### Router Interfaces
 
-The main objectives of this project were to:
+| Interface | IP Address | Network |
+|---|---|---|
+| G0/0 | 192.168.10.1 | Accounting |
+| G0/1 | 192.168.20.1 | IT |
 
-- Build two separate departmental networks
-- Configure routing between the networks
-- Verify connectivity before implementing security controls
-- Secure remote router administration with SSH
-- Disable insecure Telnet remote access
-- Implement an extended ACL between Accounting and IT
-- Apply least-privilege access to a server
-- Test and verify permitted and denied traffic
+![Network Topology](network-topology(1).png)
 
-## Access Control
+## Security Configuration
 
-I created an extended ACL named `ACCOUNTING-SECURITY`.
+Several security controls were implemented on the router.
 
-The final access policy was:
+### SSH Remote Management
 
-| Source | Destination | Service | Action |
-|---|---|---|---|
-| Accounting | File Server | HTTP (TCP/80) | Permit |
-| Accounting | IT Network | All other IP traffic | Deny |
-| Other Traffic | Any | IP | Permit |
+SSH was configured to provide encrypted remote administrative access to the router.
 
-The ACL configuration was:
+Telnet access was disabled so that remote management credentials and traffic are not transmitted using the insecure Telnet protocol.
 
-```text
-ip access-list extended ACCOUNTING-SECURITY
- 5 permit tcp 192.168.10.0 0.0.0.255 host 192.168.20.100 eq 80
- 10 deny ip 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255
- 20 permit ip any any
+### Access Control List
+
+An extended ACL named:
+
+`ACCOUNTING-SECURITY`
+
+was configured to control traffic originating from the Accounting network.
+
+The ACL was used to restrict selected traffic between:
+
+- `192.168.10.0/24` — Accounting
+- `192.168.20.0/24` — IT
+
+The configuration was verified using Cisco IOS commands.
+
+![ACL Security Verification](acl-security-verification.png)
+
+## Connectivity and ACL Testing
+
+Connectivity tests were performed from end devices to verify that routing worked and that the ACL enforced the intended restrictions.
+
+The testing demonstrated both successful communication and traffic being blocked when required by the security policy.
+
+![ACL Connectivity Testing](acl-connectivity-testing.png)
+
+## SSH and Telnet Testing
+
+Remote management security was tested from an endpoint.
+
+SSH successfully connected to the router using:
+
+`ssh -l admin 192.168.10.1`
+
+A Telnet connection to the router was also attempted and was rejected, confirming that Telnet remote access was disabled.
+
+![SSH and Telnet Security Test](ssh-telnet-security-test.png)
+
+## Technologies Used
+
+- Cisco Packet Tracer
+- Cisco IOS
+- IPv4
+- Routing
+- Access Control Lists (ACLs)
+- SSH
+- Network segmentation
+- Cisco 2911 Router
+- Cisco 2960 Switches
+
+## Skills Demonstrated
+
+This project demonstrates practical experience with:
+
+- Designing a basic network topology
+- Configuring router interfaces
+- Assigning IPv4 addresses and default gateways
+- Connecting multiple LANs
+- Configuring extended ACLs
+- Applying ACLs to router interfaces
+- Configuring secure SSH management
+- Disabling insecure Telnet access
+- Testing connectivity with ICMP
+- Troubleshooting network connectivity
+- Verifying Cisco IOS configurations
+
+## Project Summary
+
+This project simulates a small business environment where different departments are separated into their own networks and traffic between those networks is controlled using router security policies.
+
+The goal was not only to establish connectivity, but also to apply basic network-hardening practices and verify that those controls worked as intended.
