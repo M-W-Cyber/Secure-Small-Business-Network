@@ -20,7 +20,7 @@ A Cisco 2911 router connects the two networks.
 | G0/0 | 192.168.10.1 | Accounting |
 | G0/1 | 192.168.20.1 | IT |
 
-![Network Topology](network-topology(1).png)
+![Network Topology](network-topology.png)
 
 ## Security Configuration
 
